@@ -21,10 +21,12 @@ func main() {
 	defer cli.Close()
 
 	// 建立一个监听 key=name 变动的通道
-	rch := cli.Watch(context.Background(), "name")	//<-chan watchResponse
+	rch := cli.Watch(context.Background(), "name")	//<-chan watchChan
 
+	// 从通道尝试读取(监听name的变动)
 	for wresp := range rch {
 		for _, ev := range wresp.Events {
+			//
 			fmt.Printf("Type: %s key: %s value: %s\n", ev.Type, ev.Kv.Key, ev.Kv.Value)
 		}
 	}

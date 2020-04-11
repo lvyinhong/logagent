@@ -6,7 +6,6 @@ import (
 	"go.etcd.io/etcd/clientv3"
 	"time"
 )
-
 // etcd 使用put命令设置键值对数据，get命令用来根据key获取值
 func main(){
 	cli, err := clientv3.New(clientv3.Config{
@@ -25,7 +24,8 @@ func main(){
 
 	//put
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	_,err = cli.Put(ctx, "name","llvvlv00ss")
+	value := `[{"path":"/tmp/log/nginx.log","topic":"web_log"},{"path":"/tmo/log/redis.log","topic":"redis_log"}]`
+	_,err = cli.Put(ctx, "/xxx/",value)
 	cancel()
 	if err != nil {
 		fmt.Printf("put to etcd failed， err: %v\n", err)
@@ -48,3 +48,7 @@ func main(){
 	//
 	//fmt.Println("get success!")
 }
+
+
+
+
