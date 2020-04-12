@@ -47,3 +47,25 @@ func GetConf(key string) (logEntrys []*LogEntry,err error){
 	}
 	return
 }
+
+func WatchConf(key string, newConfCh chan <- []*LogEntry) {
+	ch := cli.Watch(context.Background(), key)
+	//从通道中尝试读取值(监视的信息)
+	for wresp := range ch {
+		for _, evt := range wresp.Events {
+			fmt.Printf("Type:%v key:%v value:%v", evt.Type, string(evt.Kv.Key), string(evt.Kv.Value))
+			//通知 taillog.tskMgr
+			var newConf []*LogEntry
+			if evt.Type == clientv3.EventTypeDelete {
+				// 如果是删除操作
+			}
+			err := json.Unmarshal(evt.Kv.Value, &newConf)
+			if err!= nil{
+				fmt.Printf("unmarshal failed, err:%v\n", err)
+				continue
+			}
+			fmt.Printf("get new conf:%v\n", newConf)
+			newConfCh <- newConf
+		}
+	}
+}

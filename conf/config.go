@@ -18,7 +18,8 @@ type TailLogConf struct {
 
 type EtcdConf struct {
 	Address string `ini:"address"`
-	Username string `ini:"test"`
-	Password string `ini:"123456"`
+	Key string `ini:"collect_log_key"`
+	Username string `ini:"username"`
+	Password string `ini:"password"`
 	Timeout int `init:"timeout"`
 }

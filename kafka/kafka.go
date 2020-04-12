@@ -19,7 +19,7 @@ var (
 )
 
 // 初始化client
-func Init(addrs []string, maxSize int)(err error) {
+func Init(addr []string, maxSize int)(err error) {
 	config := sarama.NewConfig()
 	//tailf 包使用
 	config.Producer.RequiredAcks = sarama.WaitForAll	//发送完数据需要leader和follow都确认
@@ -27,7 +27,7 @@ func Init(addrs []string, maxSize int)(err error) {
 	config.Producer.Return.Successes = true // 成功交付的消息将在success channel返回
 
 	// 链接kafka
-	client, err = sarama.NewSyncProducer(addrs, config)
+	client, err = sarama.NewSyncProducer(addr, config)
 	if err != nil {
 		fmt.Println("producer closed, err:", err)
 		return
@@ -54,11 +54,13 @@ func sendToKafka() {
 	for {
 		select {
 		case ld:=<-logDataChan:
+			fmt.Println(ld.data)
+			fmt.Println(ld.topic)
 			//构造一个消息
-			msg := &sarama.ProducerMessage{
-				Topic:ld.topic,
-				Value:sarama.StringEncoder(ld.data),
-			}
+			msg := &sarama.ProducerMessage{}
+			msg.Topic = ld.topic
+			msg.Value = sarama.StringEncoder(ld.data)
+
 			// 发送到kafka
 			pid, offset, err := client.SendMessage(msg)
 			if err != nil {

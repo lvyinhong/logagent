@@ -14,7 +14,7 @@ func main() {
 
 	// 构建一个消息
 	msg := &sarama.ProducerMessage{}
-	msg.Topic = `web_log`
+	msg.Topic = `nimabi`
 	msg.Value = sarama.StringEncoder("this is a good test??????")
 
 	// 链接kafka server
